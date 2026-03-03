@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "../styles/CookieConsent.css";
+import { API_BASE_URL } from "../config/env";
 
 const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false);

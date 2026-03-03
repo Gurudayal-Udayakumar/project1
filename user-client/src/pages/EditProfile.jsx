@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Profile.css";
+import { API_BASE_URL } from "../config/env";
 
 const API_BASE =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 const EditProfile = () => {
   const navigate = useNavigate();

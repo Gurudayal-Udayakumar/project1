@@ -21,7 +21,7 @@ body {
 
 /* Card */
 .register-box {
-  width: 400px;
+  width: min(400px, 92vw);
   padding: 42px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.12);
