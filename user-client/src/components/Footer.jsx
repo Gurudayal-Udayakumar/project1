@@ -13,9 +13,10 @@ import {
 } from "react-icons/fa";
 
 import "../styles/Footer.css";
+import { API_BASE_URL } from "../config/env";
 
 const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 export default function Footer({ showNewsletter = true }) {
   const currentYear = new Date().getFullYear();

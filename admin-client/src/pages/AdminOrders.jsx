@@ -3,9 +3,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import socket from "../services/socket";
 import "../styles/AdminOrders.css";
+import { API_BASE_URL } from "../config/env";
 
 const API_BASE =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);

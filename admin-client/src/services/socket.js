@@ -1,4 +1,5 @@
 import { io } from "socket.io-client";
+import { API_BASE_URL } from "../config/env";
 
 /*
   ✅ Admin socket
@@ -6,7 +7,7 @@ import { io } from "socket.io-client";
   ✅ No auto-connect
   ✅ Safe logout handling
 */
-const adminSocket = io("http://localhost:5000", {
+const adminSocket = io(API_BASE_URL, {
   autoConnect: false, // 🔴 IMPORTANT
   transports: ["websocket", "polling"],
   withCredentials: true,

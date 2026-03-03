@@ -1,11 +1,12 @@
 import { io } from "socket.io-client";
+import { API_BASE_URL } from "../config/env";
 
 /*
   ✅ DO NOT auto-connect
   ✅ Use correct token key
   ✅ Prevent auto-login after logout
 */
-const socket = io(import.meta.env.VITE_BACKEND_URL || "http://localhost:5000", {
+const socket = io(API_BASE_URL, {
   autoConnect: false, // 🔴 VERY IMPORTANT
   transports: ["websocket", "polling"],
   withCredentials: true,

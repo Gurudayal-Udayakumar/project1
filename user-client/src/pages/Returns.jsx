@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config/env";
 
 export default function Returns() {
   const [policy, setPolicy] = useState(null);
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/returns`)
+      .get(`${API_BASE_URL}/api/returns`)
       .then((res) => setPolicy(res.data))
       .catch((err) => console.error("RETURNS ERROR:", err));
   }, []);

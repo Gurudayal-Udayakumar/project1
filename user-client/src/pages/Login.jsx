@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import "../styles/Login.css";
+import { API_BASE_URL } from "../config/env";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -80,7 +81,7 @@ export default function Login() {
      GOOGLE LOGIN
   ====================== */
   const googleLogin = () => {
- window.location.href = `${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/auth/google?prompt=select_account`;
+ window.location.href = `${API_BASE_URL}/api/auth/google?prompt=select_account`;
 };
 
   /* ======================
