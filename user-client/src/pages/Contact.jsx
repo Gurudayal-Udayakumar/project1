@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import "../styles/Contact.css";
+import { API_BASE_URL } from "../config/env";
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -23,7 +24,7 @@ export default function Contact() {
     setSuccess("");
 
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/contact`, form);
+      await axios.post(`${API_BASE_URL}/api/contact`, form);
       setSuccess("Message sent successfully!");
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (error) {

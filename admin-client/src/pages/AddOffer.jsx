@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import "../styles/AdminOffers.css";
+import { API_BASE_URL } from "../config/env";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = `${API_BASE_URL}/api`;
 
 const AddOffer = () => {
   const [form, setForm] = useState({

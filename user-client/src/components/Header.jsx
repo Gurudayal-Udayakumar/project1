@@ -13,6 +13,7 @@ import { useFavorite } from "../context/FavoriteContext";
 
 import "../styles/Header.css";
 import SearchBox from "./SearchBox";
+import { API_BASE_URL } from "../config/env";
 
 export default function Header() {
   const { cart } = useCart();
@@ -58,7 +59,7 @@ export default function Header() {
   ====================== */
   const logout = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/auth/logout`, {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: "GET",
         credentials: "include",
       });
