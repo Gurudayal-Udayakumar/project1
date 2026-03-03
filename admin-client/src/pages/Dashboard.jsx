@@ -44,7 +44,6 @@ const fetchDashboardStats = async () => {
       },
     });
 
-    console.log("Dashboard API response:", res.data);
 
     // ✅ API returns flat object — USE IT DIRECTLY
     const statsData = res.data;

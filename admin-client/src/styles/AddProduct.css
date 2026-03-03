@@ -90,7 +90,8 @@
 }
 
 .size-row input {
-  width: 80px;
+  width: 100%;
+  min-width: 80px;
 }
 
 .size-row button {

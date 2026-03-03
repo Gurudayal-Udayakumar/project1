@@ -85,7 +85,6 @@ export default function Checkout() {
     setError("");
     return true;
   };
-  console.log("VITE_API_URL =", API_BASE_URL);
 
   /* ======================
      PLACE ORDER (SAFE)

@@ -38,7 +38,6 @@ export const disconnectAdminSocket = () => {
    ERROR HANDLING
 ========================= */
 adminSocket.on("connect_error", (err) => {
-  console.log("Admin socket error:", err.message);
 
   if (err.message === "Authentication failed") {
     disconnectAdminSocket();

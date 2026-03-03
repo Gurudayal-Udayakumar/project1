@@ -37,7 +37,6 @@ export const disconnectSocket = () => {
    ERROR HANDLING
 ========================= */
 socket.on("connect_error", (err) => {
-  console.log("Socket connection error:", err.message);
 
   if (err.message === "Authentication failed") {
     disconnectSocket();

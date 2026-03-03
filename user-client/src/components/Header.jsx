@@ -64,7 +64,6 @@ export default function Header() {
         credentials: "include",
       });
     } catch (err) {
-      console.log("Logout request failed (safe to ignore)");
     }
 
     localStorage.removeItem("userToken");

@@ -51,6 +51,7 @@ const AdminUsers = () => {
     <div className="admin-users">
       <h1>👥 Customers</h1>
 
+      <div className="users-table-wrap">
       <table className="users-table">
         <thead>
           <tr>
@@ -95,6 +96,7 @@ const AdminUsers = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };
