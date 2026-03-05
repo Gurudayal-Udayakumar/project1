@@ -187,7 +187,7 @@ export default function Footer({ showNewsletter = true }) {
         <div className="footer-bottom-links">
           <Link to="/privacy-policy">Privacy Policy</Link>
           <span>•</span>
-          <Link to="/terms">Terms of Service</Link>
+          <Link to="/terms-and-conditions">Terms & Conditions</Link>
           <span>•</span>
           <Link to="/cookie-policy">Cookie Policy</Link>
         </div>

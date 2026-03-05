@@ -5,6 +5,19 @@ import passport from "passport";
 import User from "../models/User.js";
 import { validateAuthPayload, validateRegisterPayload } from "../middleware/validationMiddleware.js";
 import { rateLimiter } from "../middleware/securityMiddleware.js";
+import { verifyRecaptcha } from "../middleware/recaptchaMiddleware.js";
+
+const router = express.Router();
+
+const getSafeClientRedirectUrl = () => {
+  try {
+    const url = new URL(process.env.CLIENT_URL);
+    return url.origin;
+  } catch {
+    return null;
+  }
+};
+
 
 const router = express.Router();
 
@@ -28,6 +41,7 @@ const createToken = (user) => {
 /* =========================
    USER LOGIN
 ========================= */
+router.post("/login", authRateLimiter, validateAuthPayload, verifyRecaptcha, async (req, res) => {
 router.post("/login", authRateLimiter, validateAuthPayload, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -137,6 +151,7 @@ router.post("/admin/login", authRateLimiter, validateAuthPayload, async (req, re
 /* =========================
    USER REGISTER
 ========================= */
+router.post("/register", authRateLimiter, validateRegisterPayload, verifyRecaptcha, async (req, res) => {
 router.post("/register", authRateLimiter, validateRegisterPayload, async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -199,7 +214,13 @@ router.get(
   passport.authenticate("google", { session: false }),
   (req, res) => {
     const token = createToken(req.user);
-    res.redirect(`${process.env.CLIENT_URL}/google-success?token=${token}`);
+    const safeClientOrigin = getSafeClientRedirectUrl();
+
+    if (!safeClientOrigin) {
+      return res.status(500).json({ success: false, message: "Invalid CLIENT_URL configuration" });
+    }
+
+    return res.redirect(`${safeClientOrigin}/google-success?token=${token}`);
   }
 );
 

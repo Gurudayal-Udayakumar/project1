@@ -147,3 +147,15 @@ body {
     transform: translateY(0);
   }
 }
+
+.recaptcha-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 14px 0;
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: 16px;
+  }
+}

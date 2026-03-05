@@ -10,6 +10,7 @@ export default function Login() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
 
   const navigate = useNavigate();
 
@@ -40,6 +41,11 @@ export default function Login() {
       return false;
     }
 
+    if (!recaptchaToken) {
+      setError("Please complete the reCAPTCHA verification");
+      return false;
+    }
+
     setError("");
     return true;
   };
@@ -54,7 +60,7 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const res = await loginUser({ email, password });
+      const res = await loginUser({ email, password, recaptchaToken });
 
       if (!res?.token) {
         setError(res?.message || "Login failed");
@@ -69,8 +75,7 @@ export default function Login() {
       }
 
       navigate("/home");
-    } catch (err) {
-      console.error("LOGIN ERROR:", err);
+    } catch {
       setError("Something went wrong");
     } finally {
       setLoading(false);
@@ -90,6 +95,9 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-box">
+        <div className="brand-mark" aria-hidden="true">KS</div>
+        <h1 className="site-title">KidsStore</h1>
+        <p className="site-tagline">Official online store</p>
         <h2>Welcome Back</h2>
         <p className="subtitle">Login to your account</p>
 
@@ -139,6 +147,8 @@ export default function Login() {
             Password must be at least 6 characters
           </p>
 
+          <RecaptchaBox onChange={setRecaptchaToken} />
+
           <button className="primary-btn" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -159,6 +169,7 @@ export default function Login() {
           <span onClick={() => navigate("/register")}> Register</span>
         </p>
       </div>
+      <AuthFooter />
     </div>
   );
 }

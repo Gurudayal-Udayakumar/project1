@@ -57,6 +57,21 @@ if (!process.env.CLIENT_URL || !process.env.ADMIN_URL) {
   process.exit(1);
 }
 
+if (!process.env.GOOGLE_CALLBACK_URL) {
+  console.error("❌ Missing required environment variable: GOOGLE_CALLBACK_URL");
+  process.exit(1);
+}
+
+if (isProduction && !process.env.GOOGLE_CALLBACK_URL.startsWith("https://")) {
+  console.error("❌ GOOGLE_CALLBACK_URL must use HTTPS in production");
+  process.exit(1);
+}
+
+if (isProduction && !process.env.RECAPTCHA_SECRET) {
+  console.error("❌ Missing required environment variable: RECAPTCHA_SECRET");
+  process.exit(1);
+}
+
 /* =========================
    APP & SERVER
 ========================= */
