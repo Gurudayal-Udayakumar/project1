@@ -359,3 +359,17 @@ body {
     height: 300px;
   }
 }
+
+@media (max-width: 480px) {
+  .pd-wrap {
+    padding: 16px 12px 40px;
+  }
+
+  .pd-actions {
+    flex-direction: column;
+  }
+
+  .pd-actions .wishlist {
+    flex: 1;
+  }
+}

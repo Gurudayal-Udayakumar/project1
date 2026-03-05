@@ -8,6 +8,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import jwt from "jsonwebtoken";
 import passport from "passport";
+import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware.js";
+import { requestLogger } from "./middleware/requestLogger.js";
+import { rateLimiter, sanitizeRequest, securityHeaders } from "./middleware/securityMiddleware.js";
 
 import "./config/passport.js";
 
@@ -29,6 +32,46 @@ import cookieConsentRoutes from "./routes/cookieConsentRoutes.js";
 
 dotenv.config();
 
+const isProduction = process.env.NODE_ENV === "production";
+const allowedOrigins = [process.env.CLIENT_URL, process.env.ADMIN_URL].filter(Boolean);
+
+const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
+
+if (isProduction && uniqueAllowedOrigins.length === 0) {
+  console.error("❌ Missing required CORS origins. Set CLIENT_URL and ADMIN_URL in production.");
+  process.exit(1);
+}
+
+if (!process.env.JWT_SECRET) {
+  console.error("❌ Missing required environment variable: JWT_SECRET");
+  process.exit(1);
+}
+
+if (!process.env.MONGO_URI) {
+  console.error("❌ Missing required environment variable: MONGO_URI");
+  process.exit(1);
+}
+
+if (!process.env.CLIENT_URL || !process.env.ADMIN_URL) {
+  console.error("❌ Missing required environment variables: CLIENT_URL and ADMIN_URL");
+  process.exit(1);
+}
+
+if (!process.env.GOOGLE_CALLBACK_URL) {
+  console.error("❌ Missing required environment variable: GOOGLE_CALLBACK_URL");
+  process.exit(1);
+}
+
+if (isProduction && !process.env.GOOGLE_CALLBACK_URL.startsWith("https://")) {
+  console.error("❌ GOOGLE_CALLBACK_URL must use HTTPS in production");
+  process.exit(1);
+}
+
+if (isProduction && !process.env.RECAPTCHA_SECRET) {
+  console.error("❌ Missing required environment variable: RECAPTCHA_SECRET");
+  process.exit(1);
+}
+
 /* =========================
    APP & SERVER
 ========================= */
@@ -40,11 +83,7 @@ const httpServer = createServer(app);
 ========================= */
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      process.env.CLIENT_URL,
-    ].filter(Boolean),
+    origin: uniqueAllowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -83,21 +122,27 @@ export { io };
 /* =========================
    MIDDLEWARE
 ========================= */
+app.use(requestLogger);
+app.use(securityHeaders);
+app.use(sanitizeRequest);
+app.use(rateLimiter({ max: 300, windowMs: 15 * 60 * 1000 }));
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      process.env.CLIENT_URL,
-    ].filter(Boolean),
+    origin: (origin, callback) => {
+      if (!origin || uniqueAllowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 /* =========================
    PASSPORT INIT (IMPORTANT)
@@ -141,26 +186,19 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ success: true, uptime: process.uptime() });
+});
+
 /* =========================
    404 HANDLER
 ========================= */
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
-});
+app.use(notFoundHandler);
 
 /* =========================
    GLOBAL ERROR HANDLER
 ========================= */
-app.use((err, req, res, next) => {
-  console.error("GLOBAL ERROR:", err.stack);
-  res.status(500).json({
-    success: false,
-    message: "Something went wrong",
-  });
-});
+app.use(errorHandler);
 
 /* =========================
    DATABASE + SERVER

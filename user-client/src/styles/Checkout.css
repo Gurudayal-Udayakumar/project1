@@ -224,3 +224,23 @@
     padding: 26px;
   }
 }
+
+@media (max-width: 520px) {
+  .checkout-container {
+    margin: 40px auto;
+    padding: 0 12px;
+  }
+
+  .checkout-section {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .form-group {
+    grid-template-columns: 1fr;
+  }
+
+  .place-order-btn {
+    width: 100%;
+  }
+}

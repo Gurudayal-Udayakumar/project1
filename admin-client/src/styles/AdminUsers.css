@@ -59,3 +59,19 @@
 .user-link:hover {
   text-decoration: underline;
 }
+
+
+.users-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .admin-users {
+    padding: 16px;
+  }
+
+  .users-table {
+    min-width: 680px;
+  }
+}

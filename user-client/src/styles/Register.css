@@ -21,7 +21,7 @@ body {
 
 /* Card */
 .register-box {
-  width: 400px;
+  width: min(400px, 92vw);
   padding: 42px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.12);
@@ -145,5 +145,17 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.recaptcha-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 14px 0;
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: 16px;
   }
 }

@@ -267,3 +267,21 @@
     margin-top: 40px;
   }
 }
+
+
+@media (max-width: 600px) {
+  .cart-item {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .cart-item img {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+  }
+
+  .cart-summary {
+    max-width: 100%;
+  }
+}
