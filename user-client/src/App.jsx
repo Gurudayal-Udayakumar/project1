@@ -29,7 +29,7 @@ import Returns from "./pages/Returns";
 import FAQ from "./pages/FAQ";
 import SearchResults from "./pages/SearchResults";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
+import TermsAndConditions from "./pages/TermsAndConditions";
 import CookiePolicy from "./pages/CookiePolicy";
 
 /* COMPONENTS */
@@ -72,7 +72,8 @@ function Layout() {
         <Route path="/google-success" element={<GoogleSuccess />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<Terms />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
 
         {/* PROTECTED ROUTES */}

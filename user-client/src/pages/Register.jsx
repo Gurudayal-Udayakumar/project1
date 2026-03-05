@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import "../styles/Register.css";
+import RecaptchaBox from "../components/RecaptchaBox";
+import AuthFooter from "../components/AuthFooter";
 
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const navigate = useNavigate();
 
   /* ======================
@@ -43,9 +46,14 @@ export default function Register() {
       return;
     }
 
+    if (!recaptchaToken) {
+      setError("Please complete the reCAPTCHA verification");
+      return;
+    }
+
     setError("");
 
-    const res = await registerUser(form);
+    const res = await registerUser({ ...form, recaptchaToken });
 
     if (res.message === "User registered successfully") {
       navigate("/");
@@ -112,6 +120,8 @@ export default function Register() {
           </p>
         )}
 
+        <RecaptchaBox onChange={setRecaptchaToken} />
+
         <button className="primary-btn" onClick={submit}>
           Register
         </button>
@@ -121,6 +131,7 @@ export default function Register() {
           <span onClick={() => navigate("/")}> Login</span>
         </p>
       </div>
+      <AuthFooter />
     </div>
   );
 }

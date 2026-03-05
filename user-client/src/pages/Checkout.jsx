@@ -3,6 +3,7 @@ import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/Checkout.css";
+import { API_BASE_URL } from "../config/env";
 
 export default function Checkout() {
   const { cart, clearCart } = useCart();
@@ -84,7 +85,6 @@ export default function Checkout() {
     setError("");
     return true;
   };
-  console.log("VITE_API_URL =", import.meta.env.VITE_API_URL);
 
   /* ======================
      PLACE ORDER (SAFE)
@@ -111,7 +111,7 @@ export default function Checkout() {
       setLoading(true);
 
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/orders`,
+        `${API_BASE_URL}/api/orders`,
         {
           method: "POST",
           headers: {

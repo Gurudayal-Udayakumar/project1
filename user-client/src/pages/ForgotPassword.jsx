@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { API_BASE_URL } from "../config/env";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const [msg, setMsg] = useState('')
 
   const send = async () => {
-    await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/auth/forgot`, {
+    await fetch(`${API_BASE_URL}/api/auth/forgot`, {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify({ email })
