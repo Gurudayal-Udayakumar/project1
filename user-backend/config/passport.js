@@ -5,12 +5,28 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const getSafeGoogleCallbackUrl = () => {
+  const fallbackPath = "/api/auth/google/callback";
+  const configured = process.env.GOOGLE_CALLBACK_URL;
+
+  if (!configured) {
+    return fallbackPath;
+  }
+
+  try {
+    const parsed = new URL(configured);
+    return `${parsed.origin}${fallbackPath}`;
+  } catch {
+    return fallbackPath;
+  }
+};
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback",
+      callbackURL: getSafeGoogleCallbackUrl(),
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

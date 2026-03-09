@@ -24,10 +24,6 @@ const authRateLimiter = rateLimiter({
   message: "Too many login attempts. Please try again later.",
 });
 
-
-
-
-
 /* =========================
    COMMON TOKEN CREATOR
 ========================= */
