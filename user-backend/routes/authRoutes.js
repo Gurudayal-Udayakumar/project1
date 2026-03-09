@@ -24,23 +24,9 @@ const authRateLimiter = rateLimiter({
   message: "Too many login attempts. Please try again later.",
 });
 
-const getSafeClientRedirectUrl = () => {
-  try {
-    const url = new URL(process.env.CLIENT_URL);
-    return url.origin;
-  } catch {
-    return null;
-  }
-};
 
 
-const router = express.Router();
 
-const authRateLimiter = rateLimiter({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: "Too many login attempts. Please try again later.",
-});
 
 /* =========================
    COMMON TOKEN CREATOR
