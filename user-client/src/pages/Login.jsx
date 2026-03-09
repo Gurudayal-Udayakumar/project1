@@ -88,7 +88,7 @@ export default function Login() {
      GOOGLE LOGIN
   ====================== */
   const googleLogin = () => {
- window.location.href = `${API_BASE_URL}/api/auth/google?prompt=select_account`;
+ window.location.href = `${API_BASE_URL}/api/auth/google`;
 };
 
   /* ======================
