@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import "../styles/AddProduct.css";
+import { API_BASE_URL } from "../config/env";
 
 /* constants */
 const AGE_SIZES = [
@@ -108,7 +109,7 @@ export default function AddProduct() {
       );
 
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/products/bulk`,
+        `${API_BASE_URL}/api/products/bulk`,
         formData,
         {
           headers: {

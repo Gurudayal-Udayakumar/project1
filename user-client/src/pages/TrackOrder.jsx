@@ -1,6 +1,7 @@
 import { useState } from "react"
 import axios from "axios"
 import "../styles/TrackOrder.css"
+import { API_BASE_URL } from "../config/env";
 
 const TrackOrder = () => {
   const [orderId, setOrderId] = useState("")
@@ -9,7 +10,7 @@ const TrackOrder = () => {
   const trackOrder = async () => {
     try {
       const res = await axios.get(
-       `${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/orders/track/${orderId}`
+       `${API_BASE_URL}/api/orders/track/${orderId}`
       )
       setOrder(res.data)
     } catch {
