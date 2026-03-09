@@ -18,6 +18,9 @@ const getSafeClientRedirectUrl = () => {
   }
 };
 
+
+const router = express.Router();
+
 const authRateLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000,
   max: 10,
