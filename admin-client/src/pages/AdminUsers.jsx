@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/AdminUsers.css";
+import { API_BASE_URL } from "../config/env";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = `${API_BASE_URL}/api`;
 
 const AdminUsers = () => {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const AdminUsers = () => {
     <div className="admin-users">
       <h1>👥 Customers</h1>
 
+      <div className="users-table-wrap">
       <table className="users-table">
         <thead>
           <tr>
@@ -94,6 +96,7 @@ const AdminUsers = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

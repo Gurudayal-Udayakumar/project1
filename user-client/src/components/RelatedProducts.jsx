@@ -6,9 +6,10 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import "../styles/ProductDetail.css";
+import { API_BASE_URL } from "../config/env";
 
 const API_BASE =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 export default function RelatedProducts({ currentProduct }) {
   const [products, setProducts] = useState([]);
