@@ -46,9 +46,11 @@ const scrubValue = (value) => {
   if (typeof value === "string") {
     return value.replace(/[<>$]/g, "").trim();
   }
+
   if (Array.isArray(value)) {
-    return value.map(scrubValue);
+    return value.map((item) => scrubValue(item));
   }
+
   if (value && typeof value === "object") {
     const cleaned = {};
     for (const [key, nested] of Object.entries(value)) {
@@ -57,12 +59,29 @@ const scrubValue = (value) => {
     }
     return cleaned;
   }
+
   return value;
 };
 
+const sanitizeObjectInPlace = (target) => {
+  if (!target || typeof target !== "object") return;
+
+  const cleaned = scrubValue(target);
+
+  if (!cleaned || typeof cleaned !== "object") return;
+
+  for (const key of Object.keys(target)) {
+    if (!(key in cleaned)) {
+      delete target[key];
+    }
+  }
+
+  Object.assign(target, cleaned);
+};
+
 export const sanitizeRequest = (req, res, next) => {
-  if (req.body) req.body = scrubValue(req.body);
-  if (req.query) req.query = scrubValue(req.query);
-  if (req.params) req.params = scrubValue(req.params);
+  sanitizeObjectInPlace(req.body);
+  sanitizeObjectInPlace(req.query);
+  sanitizeObjectInPlace(req.params);
   next();
 };

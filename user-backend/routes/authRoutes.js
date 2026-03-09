@@ -41,8 +41,12 @@ const createToken = (user) => {
 /* =========================
    USER LOGIN
 ========================= */
-router.post("/login", authRateLimiter, validateAuthPayload, verifyRecaptcha, async (req, res) => {
-router.post("/login", authRateLimiter, validateAuthPayload, async (req, res) => {
+router.post(
+  "/login",
+  authRateLimiter,
+  validateAuthPayload,
+  verifyRecaptcha,
+  async (req, res) => {
   try {
     const { email, password } = req.body;
     const normalizedEmail = email.toLowerCase().trim();
@@ -151,8 +155,12 @@ router.post("/admin/login", authRateLimiter, validateAuthPayload, async (req, re
 /* =========================
    USER REGISTER
 ========================= */
-router.post("/register", authRateLimiter, validateRegisterPayload, verifyRecaptcha, async (req, res) => {
-router.post("/register", authRateLimiter, validateRegisterPayload, async (req, res) => {
+router.post(
+  "/register",
+  authRateLimiter,
+  validateRegisterPayload,
+  verifyRecaptcha,
+  async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const normalizedEmail = email.toLowerCase().trim();

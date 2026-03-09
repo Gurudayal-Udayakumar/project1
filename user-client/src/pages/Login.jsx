@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import "../styles/Login.css";
 import { API_BASE_URL } from "../config/env";
+import RecaptchaBox from "../components/RecaptchaBox";
+import AuthFooter from "../components/AuthFooter";
 
 export default function Login() {
   const [email, setEmail] = useState("");
