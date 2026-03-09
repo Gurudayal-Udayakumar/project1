@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config/env";
 
 export default function About() {
   const [about, setAbout] = useState(null);
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/about`)
+      .get(`${API_BASE_URL}/api/about`)
       .then((res) => setAbout(res.data))
       .catch((err) => console.error("ABOUT ERROR:", err));
   }, []);

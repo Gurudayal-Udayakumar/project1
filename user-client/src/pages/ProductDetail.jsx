@@ -11,9 +11,10 @@ import { useCart } from "../context/CartContext";
 import { useFavorite } from "../context/FavoriteContext";
 import QuantitySelector from "../components/QuantitySelector";
 import "../styles/ProductDetail.css";
+import { API_BASE_URL } from "../config/env";
 
 const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -32,14 +33,14 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/products/${id}`
+          `${API_BASE_URL}/api/products/${id}`
         );
         const data = await res.json();
         setProduct(data.product);
 
         // Fetch related products (same category)
         const relatedRes = await fetch(
-  `${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/products?category=${data.product.category}`
+  `${API_BASE_URL}/api/products?category=${data.product.category}`
 );
         const relatedData = await relatedRes.json();
 

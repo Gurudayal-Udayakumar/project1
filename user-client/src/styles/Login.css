@@ -21,8 +21,8 @@ body {
 
 /* Card */
 .login-box {
-  width: 380px;
-  padding: 40px;
+  width: min(380px, 92vw);
+  padding: clamp(20px, 4vw, 40px);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(18px);
@@ -201,4 +201,70 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.brand-mark {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+}
+
+.site-title {
+  margin: 0;
+  text-align: center;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.site-tagline {
+  margin: 4px 0 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}
+
+.recaptcha-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 14px 0;
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 16px;
+  }
+}
+
+.auth-footer {
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.86rem;
+}
+
+.auth-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.auth-footer a {
+  color: #9fe8ff;
 }

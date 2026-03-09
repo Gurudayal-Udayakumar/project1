@@ -1,4 +1,5 @@
-const API = `${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/auth`
+import { API_BASE_URL } from "../config/env";
+const API = `${API_BASE_URL}/api/auth`
 
 export const loginUser = async (data) => {
   try {
