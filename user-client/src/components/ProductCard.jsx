@@ -11,9 +11,10 @@ import { useFavorite } from "../context/FavoriteContext";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
 import "../styles/ProductCard.css";
+import { API_BASE_URL } from "../config/env";
 
 const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 export default function ProductCard({ product }) {
   const navigate = useNavigate();

@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import socket from "../services/socket";
 import "../styles/Dashboard.css";
+import { API_BASE_URL } from "../config/env";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = `${API_BASE_URL}/api`;
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -43,7 +44,6 @@ const fetchDashboardStats = async () => {
       },
     });
 
-    console.log("Dashboard API response:", res.data);
 
     // ✅ API returns flat object — USE IT DIRECTLY
     const statsData = res.data;

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import "../styles/NewArrivals.css";
+import { API_BASE_URL } from "../config/env";
 
 const API_BASE =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+  API_BASE_URL;
 
 export default function NewArrivals() {
   const [products, setProducts] = useState([]);

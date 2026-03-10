@@ -3,8 +3,26 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import User from "../models/User.js";
+import { validateAuthPayload, validateRegisterPayload } from "../middleware/validationMiddleware.js";
+import { rateLimiter } from "../middleware/securityMiddleware.js";
+import { verifyRecaptcha } from "../middleware/recaptchaMiddleware.js";
 
-const router = express.Router();
+const router = express.Router(); // Single router instance for auth routes.
+
+const getSafeClientRedirectUrl = () => {
+  try {
+    const url = new URL(process.env.CLIENT_URL);
+    return url.origin;
+  } catch {
+    return null;
+  }
+};
+
+const authRateLimiter = rateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: "Too many login attempts. Please try again later.",
+});
 
 /* =========================
    COMMON TOKEN CREATOR
@@ -13,16 +31,22 @@ const createToken = (user) => {
   return jwt.sign(
     { id: user._id, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: "1d" }
+    { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
   );
 };
 
 /* =========================
    USER LOGIN
 ========================= */
-router.post("/login", async (req, res) => {
+router.post(
+  "/login",
+  authRateLimiter,
+  validateAuthPayload,
+  verifyRecaptcha,
+  async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email.toLowerCase().trim();
 
     if (!email || !password) {
       return res.status(400).json({
@@ -31,16 +55,22 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email, role: "user" });
+    const user = await User.findOne({ email: normalizedEmail, role: "user" });
     if (!user) {
+      console.warn(`[AUTH] Failed user login for ${normalizedEmail}`);
       return res.status(401).json({
         success: false,
         message: "Invalid user credentials",
       });
     }
 
+    if (user.isActive === false) {
+      return res.status(403).json({ success: false, message: "Account is disabled" });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.warn(`[AUTH] Invalid password for ${normalizedEmail}`);
       return res.status(401).json({
         success: false,
         message: "Invalid user credentials",
@@ -71,11 +101,12 @@ router.post("/login", async (req, res) => {
 /* =========================
    ADMIN LOGIN
 ========================= */
-router.post("/admin/login", async (req, res) => {
+router.post("/admin/login", authRateLimiter, validateAuthPayload, async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email.toLowerCase().trim();
 
-    const admin = await User.findOne({ email });
+    const admin = await User.findOne({ email: normalizedEmail });
 
     if (!admin || admin.role !== "admin") {
       return res.status(403).json({
@@ -84,8 +115,13 @@ router.post("/admin/login", async (req, res) => {
       });
     }
 
+    if (admin.isActive === false) {
+      return res.status(403).json({ success: false, message: "Account is disabled" });
+    }
+
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
+      console.warn(`[AUTH] Invalid admin password for ${normalizedEmail}`);
       return res.status(401).json({
         success: false,
         message: "Invalid admin credentials",
@@ -116,11 +152,17 @@ router.post("/admin/login", async (req, res) => {
 /* =========================
    USER REGISTER
 ========================= */
-router.post("/register", async (req, res) => {
+router.post(
+  "/register",
+  authRateLimiter,
+  validateRegisterPayload,
+  verifyRecaptcha,
+  async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedEmail = email.toLowerCase().trim();
 
-    const existing = await User.findOne({ email });
+    const existing = await User.findOne({ email: normalizedEmail });
     if (existing) {
       return res.status(409).json({
         success: false,
@@ -132,7 +174,7 @@ router.post("/register", async (req, res) => {
 
     const user = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       role: "user",
     });
@@ -177,7 +219,13 @@ router.get(
   passport.authenticate("google", { session: false }),
   (req, res) => {
     const token = createToken(req.user);
-    res.redirect(`${process.env.CLIENT_URL}/google-success?token=${token}`);
+    const safeClientOrigin = getSafeClientRedirectUrl();
+
+    if (!safeClientOrigin) {
+      return res.status(500).json({ success: false, message: "Invalid CLIENT_URL configuration" });
+    }
+
+    return res.redirect(`${safeClientOrigin}/google-success?token=${token}`);
   }
 );
 

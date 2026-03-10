@@ -3,6 +3,7 @@ import CategoryTabs from "../components/CategoryTabs";
 import ProductCard from "../components/ProductCard";
 import socket from "../services/socket";
 import "../styles/GirlsProducts.css";
+import { API_BASE_URL } from "../config/env";
 
 const categories = [
   "All",
@@ -34,7 +35,7 @@ export default function GirlsProducts() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api/products`);
+      const res = await fetch(`${API_BASE_URL}/api/products`);
       const data = await res.json();
 
       setProducts(Array.isArray(data.products) ? data.products : []);
