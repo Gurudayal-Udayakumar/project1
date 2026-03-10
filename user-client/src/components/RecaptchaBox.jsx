@@ -1,5 +1,25 @@
 import { useEffect, useMemo, useRef } from "react";
 
+const getMappedKeyByHost = (mappedKeys, host) => {
+  if (!mappedKeys || !host) return null;
+
+  if (mappedKeys[host]) {
+    return mappedKeys[host];
+  }
+
+  const wildcardKey = Object.entries(mappedKeys).find(([pattern]) => {
+    if (!pattern.startsWith("*.")) return false;
+    const suffix = pattern.slice(1); // ".example.com"
+    return host.endsWith(suffix);
+  });
+
+  if (wildcardKey) {
+    return wildcardKey[1];
+  }
+
+  return mappedKeys.default || null;
+};
+
 const resolveSiteKey = () => {
   const directKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
   const mappedKeysRaw = import.meta.env.VITE_RECAPTCHA_SITE_KEY_BY_DOMAIN;
@@ -8,8 +28,10 @@ const resolveSiteKey = () => {
     try {
       const mappedKeys = JSON.parse(mappedKeysRaw);
       const host = window.location.hostname;
-      if (mappedKeys?.[host]) {
-        return mappedKeys[host];
+      const mappedKey = getMappedKeyByHost(mappedKeys, host);
+
+      if (mappedKey) {
+        return mappedKey;
       }
     } catch {
       // fall back to direct key below

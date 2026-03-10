@@ -33,9 +33,26 @@ import cookieConsentRoutes from "./routes/cookieConsentRoutes.js";
 dotenv.config();
 
 const isProduction = process.env.NODE_ENV === "production";
-const allowedOrigins = [process.env.CLIENT_URL, process.env.ADMIN_URL].filter(Boolean);
 
-const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
+const normalizeOrigin = (value) => {
+  if (!value) return null;
+  try {
+    const parsed = new URL(value);
+    return parsed.origin.toLowerCase();
+  } catch {
+    return String(value).replace(/\/$/, "").toLowerCase();
+  }
+};
+
+const configuredOrigins = [
+  process.env.CLIENT_URL,
+  process.env.ADMIN_URL,
+  ...(process.env.CORS_EXTRA_ORIGINS || "").split(","),
+]
+  .map((origin) => normalizeOrigin(origin?.trim()))
+  .filter(Boolean);
+
+const uniqueAllowedOrigins = [...new Set(configuredOrigins)];
 
 if (isProduction && uniqueAllowedOrigins.length === 0) {
   console.error("❌ Missing required CORS origins. Set CLIENT_URL and ADMIN_URL in production.");
@@ -130,9 +147,16 @@ app.use(rateLimiter({ max: 300, windowMs: 15 * 60 * 1000 }));
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || uniqueAllowedOrigins.includes(origin)) {
+      if (!origin) {
         return callback(null, true);
       }
+
+      const normalizedOrigin = normalizeOrigin(origin);
+      if (normalizedOrigin && uniqueAllowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      console.warn(`[CORS] Blocked origin: ${origin}`);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
